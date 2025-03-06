@@ -1,7 +1,30 @@
-import { Stack, Tabs } from 'expo-router';
-import { FontAwesome } from '@expo/vector-icons';
+import { Stack, useRouter, useSegments } from 'expo-router';
+import { useEffect } from 'react';
+import { AuthProvider, useAuth } from './context/auth';
 
-export default function AppLayout() {
+function RootLayoutNav() {
+  const { user, isLoading } = useAuth();
+  const segments = useSegments();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isLoading) return;
+
+    const inAuthGroup = segments[0] === '(auth)';
+
+    if (!user && !inAuthGroup) {
+      // Redirect to login if not authenticated
+      router.replace('/(auth)/login');
+    } else if (user && inAuthGroup) {
+      // Redirect to home if authenticated and trying to access auth screens
+      router.replace('/(tabs)');
+    }
+  }, [user, segments, isLoading]);
+
+  if (isLoading) {
+    return null; // Or a loading screen
+  }
+
   return (
     <Stack>
       <Stack.Screen
@@ -20,64 +43,10 @@ export default function AppLayout() {
   );
 }
 
-function TabLayout() {
+export default function RootLayout() {
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: '#FF6B6B',
-        tabBarInactiveTintColor: '#666',
-        tabBarStyle: {
-          backgroundColor: '#fff',
-          borderTopWidth: 1,
-          borderTopColor: '#eee',
-          paddingBottom: 5,
-          paddingTop: 5,
-        },
-        headerStyle: {
-          backgroundColor: '#fff',
-        },
-        headerTintColor: '#333',
-        headerTitleStyle: {
-          fontWeight: 'bold',
-        },
-      }}
-    >
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color, size }) => (
-            <FontAwesome name="home" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="tickets"
-        options={{
-          title: 'My Tickets',
-          tabBarIcon: ({ color, size }) => (
-            <FontAwesome name="ticket" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="buy"
-        options={{
-          title: 'Buy Tickets',
-          tabBarIcon: ({ color, size }) => (
-            <FontAwesome name="shopping-cart" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="profile"
-        options={{
-          title: 'Profile',
-          tabBarIcon: ({ color, size }) => (
-            <FontAwesome name="user" size={size} color={color} />
-          ),
-        }}
-      />
-    </Tabs>
+    <AuthProvider>
+      <RootLayoutNav />
+    </AuthProvider>
   );
 }

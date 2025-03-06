@@ -7,8 +7,10 @@ import {
   TouchableOpacity,
   Image,
   Dimensions,
+  Alert,
 } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
+import { useLocalSearchParams, router } from 'expo-router';
 
 const { width } = Dimensions.get('window');
 
@@ -23,8 +25,15 @@ const SEATS_PER_ROW = 10;
 const ROWS = 15;
 
 export default function BuyScreen() {
+  const params = useLocalSearchParams();
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
   const [selectedSection, setSelectedSection] = useState<string | null>(null);
+
+  // If no match is selected, redirect to matches screen
+  if (!params.matchId) {
+    router.replace('/matches');
+    return null;
+  }
 
   const toggleSeat = (row: number, seat: number) => {
     const seatId = `${String.fromCharCode(65 + row)}${seat + 1}`;
@@ -102,11 +111,36 @@ export default function BuyScreen() {
     }, 0);
   };
 
+  const handleConfirmSelection = () => {
+    if (selectedSeats.length === 0) {
+      Alert.alert('Error', 'Please select at least one seat');
+      return;
+    }
+
+    // TODO: Implement ticket purchase logic
+    Alert.alert(
+      'Success',
+      'Tickets purchased successfully!',
+      [
+        {
+          text: 'OK',
+          onPress: () => router.replace('/(tabs)/tickets'),
+        },
+      ]
+    );
+  };
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Select Seats</Text>
-        <Text style={styles.headerSubtitle}>Choose your preferred seats</Text>
+        <Text style={styles.headerSubtitle}>
+          {params.team1} vs {params.team2}
+        </Text>
+        <Text style={styles.matchInfo}>
+          {new Date(params.date as string).toLocaleDateString()} {params.time}
+        </Text>
+        <Text style={styles.stadiumInfo}>{params.stadium}</Text>
       </View>
 
       <View style={styles.content}>
@@ -130,7 +164,7 @@ export default function BuyScreen() {
             { opacity: selectedSeats.length > 0 ? 1 : 0.5 },
           ]}
           disabled={selectedSeats.length === 0}
-          onPress={() => {}}
+          onPress={handleConfirmSelection}
         >
           <Text style={styles.confirmButtonText}>Confirm Selection</Text>
         </TouchableOpacity>
@@ -155,7 +189,18 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   headerSubtitle: {
+    fontSize: 18,
+    color: '#fff',
+    marginTop: 5,
+  },
+  matchInfo: {
     fontSize: 16,
+    color: '#fff',
+    opacity: 0.8,
+    marginTop: 5,
+  },
+  stadiumInfo: {
+    fontSize: 14,
     color: '#fff',
     opacity: 0.8,
     marginTop: 5,

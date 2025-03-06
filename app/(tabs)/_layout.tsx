@@ -1,4 +1,4 @@
-import { Tabs } from 'expo-router';
+import { Tabs, router } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
 
 export default function TabLayout() {
@@ -11,8 +11,9 @@ export default function TabLayout() {
           backgroundColor: '#fff',
           borderTopWidth: 1,
           borderTopColor: '#eee',
-          paddingBottom: 5,
-          paddingTop: 5,
+          paddingBottom: 20,
+          marginBottom: 0,
+          paddingTop: 0,
         },
         headerStyle: {
           backgroundColor: '#fff',
@@ -48,6 +49,12 @@ export default function TabLayout() {
           tabBarIcon: ({ color, size }) => (
             <FontAwesome name="shopping-cart" size={size} color={color} />
           ),
+        }}
+        listeners={{
+          tabPress: (e) => {
+            e.preventDefault();
+            router.push('/matches');
+          },
         }}
       />
       <Tabs.Screen

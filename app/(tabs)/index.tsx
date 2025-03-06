@@ -78,7 +78,7 @@ export default function HomeScreen() {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Quick Actions</Text>
         <View style={styles.actionsContainer}>
-          <Link href="/(tabs)/buy" asChild>
+          <Link href="/matches" asChild>
             <TouchableOpacity style={styles.actionButton}>
               <FontAwesome name="ticket" size={24} color="#FF6B6B" />
               <Text style={styles.actionText}>Buy Tickets</Text>

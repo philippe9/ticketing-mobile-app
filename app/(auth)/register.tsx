@@ -2,160 +2,182 @@ import React, { useState } from 'react';
 import {
   View,
   Text,
+  StyleSheet,
   TextInput,
   TouchableOpacity,
-  StyleSheet,
-  ImageBackground,
+  Image,
+  Alert,
 } from 'react-native';
 import { Link, router } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
+import { useAuth } from '../context/auth';
 
 export default function RegisterScreen() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const { signUp } = useAuth();
 
-  const handleRegister = () => {
-    // TODO: Implement registration logic
-    console.log('Register pressed');
+  const handleRegister = async () => {
+    if (!name || !email || !password || !confirmPassword) {
+      Alert.alert('Error', 'Please fill in all fields');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      Alert.alert('Error', 'Passwords do not match');
+      return;
+    }
+
+    try {
+      await signUp(name, email, password);
+    } catch (error) {
+      Alert.alert('Error', 'Failed to create account. Please try again.');
+    }
   };
 
   return (
-    <ImageBackground
-      source={require('../../assets/images/afcon-bg.jpg')}
-      style={styles.background}
-    >
-      <StatusBar style="light" />
-      <View style={styles.container}>
-        <View style={styles.formContainer}>
-          <Text style={styles.title}>Create Account</Text>
-          <Text style={styles.subtitle}>Join us for AFCON 2024</Text>
-          
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Image
+          source={require('../../assets/images/afcon-logo.png')}
+          style={styles.logo}
+        />
+        <Text style={styles.title}>Create Account</Text>
+        <Text style={styles.subtitle}>Sign up to get started</Text>
+      </View>
+
+      <View style={styles.form}>
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Full Name</Text>
           <TextInput
             style={styles.input}
-            placeholder="Full Name"
-            placeholderTextColor="#666"
+            placeholder="Enter your full name"
             value={name}
             onChangeText={setName}
             autoCapitalize="words"
           />
+        </View>
 
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Email</Text>
           <TextInput
             style={styles.input}
-            placeholder="Email"
-            placeholderTextColor="#666"
+            placeholder="Enter your email"
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
             autoCapitalize="none"
           />
-          
+        </View>
+
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Password</Text>
           <TextInput
             style={styles.input}
-            placeholder="Password"
-            placeholderTextColor="#666"
+            placeholder="Create a password"
             value={password}
             onChangeText={setPassword}
             secureTextEntry
           />
+        </View>
 
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Confirm Password</Text>
           <TextInput
             style={styles.input}
-            placeholder="Confirm Password"
-            placeholderTextColor="#666"
+            placeholder="Confirm your password"
             value={confirmPassword}
             onChangeText={setConfirmPassword}
             secureTextEntry
           />
-          
-          <TouchableOpacity style={styles.button} onPress={handleRegister}>
-            <Text style={styles.buttonText}>Create Account</Text>
-          </TouchableOpacity>
-          
-          <View style={styles.footer}>
-            <Text style={styles.footerText}>Already have an account? </Text>
-            <Link href="/(auth)/login" asChild>
-              <TouchableOpacity>
-                <Text style={styles.linkText}>Sign In</Text>
-              </TouchableOpacity>
-            </Link>
-          </View>
+        </View>
+
+        <TouchableOpacity style={styles.button} onPress={handleRegister}>
+          <Text style={styles.buttonText}>Create Account</Text>
+        </TouchableOpacity>
+
+        <View style={styles.loginContainer}>
+          <Text style={styles.loginText}>Already have an account? </Text>
+          <Link href="/(auth)/login" asChild>
+            <TouchableOpacity>
+              <Text style={styles.loginLink}>Sign In</Text>
+            </TouchableOpacity>
+          </Link>
         </View>
       </View>
-    </ImageBackground>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  background: {
-    flex: 1,
-    width: '100%',
-  },
   container: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'center',
-    padding: 20,
+    backgroundColor: '#fff',
   },
-  formContainer: {
-    backgroundColor: 'rgba(255,255,255,0.95)',
-    borderRadius: 20,
-    padding: 30,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
+  header: {
+    alignItems: 'center',
+    paddingTop: 60,
+    paddingBottom: 40,
+  },
+  logo: {
+    width: 120,
+    height: 120,
+    resizeMode: 'contain',
+    marginBottom: 20,
   },
   title: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: 'bold',
-    color: '#1a1a1a',
+    color: '#333',
     marginBottom: 10,
-    textAlign: 'center',
   },
   subtitle: {
     fontSize: 16,
     color: '#666',
-    marginBottom: 30,
-    textAlign: 'center',
   },
-  input: {
-    backgroundColor: '#f5f5f5',
-    borderRadius: 10,
-    padding: 15,
-    marginBottom: 15,
+  form: {
+    padding: 20,
+  },
+  inputContainer: {
+    marginBottom: 20,
+  },
+  label: {
     fontSize: 16,
     color: '#333',
+    marginBottom: 8,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 8,
+    padding: 12,
+    fontSize: 16,
   },
   button: {
     backgroundColor: '#FF6B6B',
-    borderRadius: 10,
-    padding: 15,
+    padding: 16,
+    borderRadius: 8,
     alignItems: 'center',
-    marginTop: 10,
+    marginBottom: 20,
   },
   buttonText: {
     color: '#fff',
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
   },
-  footer: {
+  loginContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: 20,
+    alignItems: 'center',
   },
-  footerText: {
+  loginText: {
     color: '#666',
-    fontSize: 16,
+    fontSize: 14,
   },
-  linkText: {
+  loginLink: {
     color: '#FF6B6B',
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
   },
 }); 

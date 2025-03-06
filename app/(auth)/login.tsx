@@ -2,140 +2,165 @@ import React, { useState } from 'react';
 import {
   View,
   Text,
+  StyleSheet,
   TextInput,
   TouchableOpacity,
-  StyleSheet,
-  ImageBackground,
+  Image,
+  Alert,
 } from 'react-native';
 import { Link } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
+import { useAuth } from '../context/auth';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const { signIn } = useAuth();
 
-  const handleLogin = () => {
-    // TODO: Implement login logic
-    console.log('Login pressed');
+  const handleLogin = async () => {
+    if (!email || !password) {
+      Alert.alert('Error', 'Please fill in all fields');
+      return;
+    }
+
+    try {
+      await signIn(email, password);
+    } catch (error) {
+      Alert.alert('Error', 'Failed to sign in. Please try again.');
+    }
   };
 
   return (
-    <ImageBackground
-      source={require('../../assets/images/afcon-bg.jpg')}
-      style={styles.background}
-    >
-      <StatusBar style="light" />
-      <View style={styles.container}>
-        <View style={styles.formContainer}>
-          <Text style={styles.title}>Welcome Back</Text>
-          <Text style={styles.subtitle}>Sign in to continue</Text>
-          
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Image
+          source={require('../../assets/images/afcon-logo.png')}
+          style={styles.logo}
+        />
+        <Text style={styles.title}>Welcome Back!</Text>
+        <Text style={styles.subtitle}>Sign in to continue</Text>
+      </View>
+
+      <View style={styles.form}>
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Email</Text>
           <TextInput
             style={styles.input}
-            placeholder="Email"
-            placeholderTextColor="#666"
+            placeholder="Enter your email"
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
             autoCapitalize="none"
           />
-          
+        </View>
+
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Password</Text>
           <TextInput
             style={styles.input}
-            placeholder="Password"
-            placeholderTextColor="#666"
+            placeholder="Enter your password"
             value={password}
             onChangeText={setPassword}
             secureTextEntry
           />
-          
-          <TouchableOpacity style={styles.button} onPress={handleLogin}>
-            <Text style={styles.buttonText}>Sign In</Text>
-          </TouchableOpacity>
-          
-          <View style={styles.footer}>
-            <Text style={styles.footerText}>Don't have an account? </Text>
-            <Link href="/register" asChild>
-              <TouchableOpacity>
-                <Text style={styles.linkText}>Sign Up</Text>
-              </TouchableOpacity>
-            </Link>
-          </View>
+        </View>
+
+        <TouchableOpacity style={styles.forgotPassword}>
+          <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.button} onPress={handleLogin}>
+          <Text style={styles.buttonText}>Sign In</Text>
+        </TouchableOpacity>
+
+        <View style={styles.registerContainer}>
+          <Text style={styles.registerText}>Don't have an account? </Text>
+          <Link href="/(auth)/register" asChild>
+            <TouchableOpacity>
+              <Text style={styles.registerLink}>Sign Up</Text>
+            </TouchableOpacity>
+          </Link>
         </View>
       </View>
-    </ImageBackground>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  background: {
-    flex: 1,
-    width: '100%',
-  },
   container: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'center',
-    padding: 20,
+    backgroundColor: '#fff',
   },
-  formContainer: {
-    backgroundColor: 'rgba(255,255,255,0.95)',
-    borderRadius: 20,
-    padding: 30,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
+  header: {
+    alignItems: 'center',
+    paddingTop: 60,
+    paddingBottom: 40,
+  },
+  logo: {
+    width: 120,
+    height: 120,
+    resizeMode: 'contain',
+    marginBottom: 20,
   },
   title: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: 'bold',
-    color: '#1a1a1a',
+    color: '#333',
     marginBottom: 10,
-    textAlign: 'center',
   },
   subtitle: {
     fontSize: 16,
     color: '#666',
-    marginBottom: 30,
-    textAlign: 'center',
   },
-  input: {
-    backgroundColor: '#f5f5f5',
-    borderRadius: 10,
-    padding: 15,
-    marginBottom: 15,
+  form: {
+    padding: 20,
+  },
+  inputContainer: {
+    marginBottom: 20,
+  },
+  label: {
     fontSize: 16,
     color: '#333',
+    marginBottom: 8,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 8,
+    padding: 12,
+    fontSize: 16,
+  },
+  forgotPassword: {
+    alignSelf: 'flex-end',
+    marginBottom: 20,
+  },
+  forgotPasswordText: {
+    color: '#FF6B6B',
+    fontSize: 14,
   },
   button: {
     backgroundColor: '#FF6B6B',
-    borderRadius: 10,
-    padding: 15,
+    padding: 16,
+    borderRadius: 8,
     alignItems: 'center',
-    marginTop: 10,
+    marginBottom: 20,
   },
   buttonText: {
     color: '#fff',
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
   },
-  footer: {
+  registerContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: 20,
+    alignItems: 'center',
   },
-  footerText: {
+  registerText: {
     color: '#666',
-    fontSize: 16,
+    fontSize: 14,
   },
-  linkText: {
+  registerLink: {
     color: '#FF6B6B',
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
   },
 }); 
