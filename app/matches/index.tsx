@@ -70,7 +70,7 @@ export default function MatchesScreen() {
           <Link
             key={match.id}
             href={{
-              pathname: '/(tabs)/buy',
+              pathname: '/matches/buy',
               params: {
                 matchId: match.id,
                 team1: match.team1,
