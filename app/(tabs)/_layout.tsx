@@ -1,26 +1,23 @@
-import { Tabs, router } from 'expo-router';
+import { Tabs } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
 
 export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: '#FF6B6B',
+        headerShown: false,
+        tabBarActiveTintColor: '#008C45',  // Moroccan flag green
         tabBarInactiveTintColor: '#666',
         tabBarStyle: {
           backgroundColor: '#fff',
           borderTopWidth: 1,
           borderTopColor: '#eee',
-          paddingBottom: 20,
-          marginBottom: 0,
-          paddingTop: 0,
+          
+          
         },
-        headerStyle: {
-          backgroundColor: '#fff',
-        },
-        headerTintColor: '#333',
-        headerTitleStyle: {
-          fontWeight: 'bold',
+        tabBarLabelStyle: {
+          fontSize: 12,
+          fontWeight: '500',
         },
       }}
     >
@@ -43,26 +40,11 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="buy"
+        name="purchase"
         options={{
           title: 'Buy Tickets',
           tabBarIcon: ({ color, size }) => (
             <FontAwesome name="shopping-cart" size={size} color={color} />
-          ),
-        }}
-        listeners={{
-          tabPress: (e) => {
-            e.preventDefault();
-            router.push('/matches');
-          },
-        }}
-      />
-      <Tabs.Screen
-        name="profile"
-        options={{
-          title: 'Profile',
-          tabBarIcon: ({ color, size }) => (
-            <FontAwesome name="user" size={size} color={color} />
           ),
         }}
       />

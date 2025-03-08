@@ -6,6 +6,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
+  ImageBackground,
 } from 'react-native';
 import { Link } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
@@ -34,62 +35,57 @@ const UPCOMING_MATCHES = [
 export default function HomeScreen() {
   return (
     <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <Image
-          source={require('../../assets/images/afcon-logo.png')}
-          style={styles.logo}
-        />
-        <Text style={styles.headerTitle}>AFCON 2024</Text>
-      </View>
+      <ImageBackground
+        source={require('../../assets/images/morocco-background.jpg')}
+        style={styles.hero}
+      >
+        <View style={styles.heroOverlay}>
+          <Text style={styles.heroTitle}>AFCON 2025</Text>
+          <Text style={styles.heroSubtitle}>Morocco</Text>
+        </View>
+      </ImageBackground>
 
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Upcoming Matches</Text>
-        {UPCOMING_MATCHES.map((match) => (
-          <TouchableOpacity
-            key={match.id}
-            style={styles.matchCard}
-            onPress={() => {}}
-          >
-            <View style={styles.matchHeader}>
-              <Text style={styles.groupText}>{match.group}</Text>
-              <Text style={styles.dateText}>
-                {new Date(match.date).toLocaleDateString()} {match.time}
+      <View style={styles.content}>
+      <React.Fragment>
+        <Link href="../purchase" asChild>
+          <TouchableOpacity style={styles.card}>
+            <FontAwesome name="ticket" size={24} color="#008C45" />
+            <View style={styles.cardContent}>
+              <Text style={styles.cardTitle}>Buy Match Tickets</Text>
+              <Text style={styles.cardDescription}>
+                Select your matches and book your complete experience
               </Text>
             </View>
-            <View style={styles.teamsContainer}>
-              <View style={styles.team}>
-                <Text style={styles.teamName}>{match.team1}</Text>
-              </View>
-              <View style={styles.vsContainer}>
-                <Text style={styles.vsText}>VS</Text>
-              </View>
-              <View style={styles.team}>
-                <Text style={styles.teamName}>{match.team2}</Text>
-              </View>
-            </View>
-            <View style={styles.stadiumContainer}>
-              <FontAwesome name="map-marker" size={14} color="#666" />
-              <Text style={styles.stadiumText}>{match.stadium}</Text>
-            </View>
+            <FontAwesome name="chevron-right" size={20} color="#666" />
           </TouchableOpacity>
-        ))}
-      </View>
+        </Link>
+        </React.Fragment>
+        <View style={styles.infoSection}>
+          <Text style={styles.infoTitle}>Tournament Information</Text>
+          <View style={styles.infoItem}>
+            <FontAwesome name="calendar" size={20} color="#666" style={styles.infoIcon} />
+            <Text style={styles.infoText}>January - February 2025</Text>
+          </View>
+          <View style={styles.infoItem}>
+            <FontAwesome name="map-marker" size={20} color="#666" style={styles.infoIcon} />
+            <Text style={styles.infoText}>Multiple Cities in Morocco</Text>
+          </View>
+          <View style={styles.infoItem}>
+            <FontAwesome name="trophy" size={20} color="#666" style={styles.infoIcon} />
+            <Text style={styles.infoText}>Africa Cup of Nations 2025</Text>
+          </View>
+          <View style={styles.infoItem}>
+            <FontAwesome name="flag" size={20} color="#666" style={styles.infoIcon} />
+            <Text style={styles.infoText}>24 National Teams</Text>
+          </View>
+        </View>
 
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Quick Actions</Text>
-        <View style={styles.actionsContainer}>
-          <Link href="/matches" asChild>
-            <TouchableOpacity style={styles.actionButton}>
-              <FontAwesome name="ticket" size={24} color="#FF6B6B" />
-              <Text style={styles.actionText}>Buy Tickets</Text>
-            </TouchableOpacity>
-          </Link>
-          <Link href="/(tabs)/tickets" asChild>
-            <TouchableOpacity style={styles.actionButton}>
-              <FontAwesome name="list" size={24} color="#FF6B6B" />
-              <Text style={styles.actionText}>My Tickets</Text>
-            </TouchableOpacity>
-          </Link>
+        <View style={styles.noteSection}>
+          <Text style={styles.noteTitle}>Ticket Purchase Process</Text>
+          <Text style={styles.noteText}>
+            The ticket purchase includes match selection, seat reservation, visa eligibility check, 
+            and optional hotel booking - all in one seamless process.
+          </Text>
         </View>
       </View>
     </ScrollView>
@@ -101,112 +97,100 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f5f5f5',
   },
-  header: {
-    backgroundColor: '#FF6B6B',
-    padding: 20,
+  hero: {
+    height: 200,
+  },
+  heroOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    justifyContent: 'center',
     alignItems: 'center',
   },
-  logo: {
-    width: 100,
-    height: 100,
-    resizeMode: 'contain',
-    marginBottom: 10,
-  },
-  headerTitle: {
-    fontSize: 24,
+  heroTitle: {
+    fontSize: 36,
     fontWeight: 'bold',
     color: '#fff',
+    textAlign: 'center',
   },
-  section: {
+  heroSubtitle: {
+    fontSize: 24,
+    color: '#fff',
+    marginTop: 5,
+    textAlign: 'center',
+  },
+  content: {
     padding: 20,
   },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 15,
-  },
-  matchCard: {
+  card: {
     backgroundColor: '#fff',
-    borderRadius: 15,
-    padding: 15,
-    marginBottom: 15,
+    borderRadius: 10,
+    padding: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 2,
     },
     shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 5,
+    shadowRadius: 4,
+    elevation: 3,
   },
-  matchHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 10,
-  },
-  groupText: {
-    color: '#FF6B6B',
-    fontWeight: 'bold',
-  },
-  dateText: {
-    color: '#666',
-  },
-  teamsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  team: {
+  cardContent: {
     flex: 1,
-    alignItems: 'center',
+    marginLeft: 15,
+    marginRight: 15,
   },
-  teamName: {
+  cardTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: '600',
     color: '#333',
   },
-  vsContainer: {
-    paddingHorizontal: 15,
-  },
-  vsText: {
+  cardDescription: {
+    fontSize: 14,
     color: '#666',
-    fontWeight: 'bold',
+    marginTop: 5,
   },
-  stadiumContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 10,
-  },
-  stadiumText: {
-    color: '#666',
-    marginLeft: 5,
-  },
-  actionsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginTop: 10,
-  },
-  actionButton: {
+  infoSection: {
     backgroundColor: '#fff',
+    borderRadius: 10,
     padding: 20,
-    borderRadius: 15,
-    alignItems: 'center',
-    width: '45%',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 5,
+    marginBottom: 20,
   },
-  actionText: {
-    marginTop: 10,
+  infoTitle: {
+    fontSize: 18,
+    fontWeight: '600',
     color: '#333',
-    fontWeight: 'bold',
+    marginBottom: 15,
+  },
+  infoItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 15,
+  },
+  infoIcon: {
+    width: 30,
+  },
+  infoText: {
+    fontSize: 16,
+    color: '#666',
+    marginLeft: 10,
+  },
+  noteSection: {
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 20,
+  },
+  noteTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 10,
+  },
+  noteText: {
+    fontSize: 14,
+    color: '#666',
+    lineHeight: 20,
   },
 }); 

@@ -7,98 +7,146 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
-import { Link } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
 
 const MY_TICKETS = [
   {
     id: '1',
-    match: 'Nigeria vs Egypt',
-    date: '2024-01-14',
+    matchId: '1',
+    team1: 'Morocco',
+    team2: 'Ghana',
+    date: '2025-01-12',
     time: '20:00',
-    stadium: 'Alassane Ouattara Stadium',
-    seats: ['A12', 'A13'],
-    category: 'VIP',
-    price: 150,
+    stadium: 'Mohammed V Stadium',
+    city: 'Casablanca',
+    selectedSeats: ['A12', 'A13'],
+    totalPrice: 300,
+    nationality: 'Nigerian',
+    passportType: 'Ordinary Passport',
+    hotelArrivalDate: '2025-01-10',
+    hotelDepartureDate: '2025-01-14',
+    roomPreference: 'Double',
+    numberOfGuests: '2',
+    departureCity: 'Lagos (LOS)',
+    departureDate: '2025-01-10',
+    returnDate: '2025-01-14',
+    cabinClass: 'Economy',
+    numAdults: '2',
+    numChildren: '0',
+    numInfants: '0',
     status: 'active',
   },
   {
     id: '2',
-    match: 'Senegal vs Cameroon',
-    date: '2024-01-15',
+    matchId: '2',
+    team1: 'Egypt',
+    team2: 'Nigeria',
+    date: '2025-01-13',
     time: '17:00',
-    stadium: 'Charles Konan Banny Stadium',
-    seats: ['B5', 'B6'],
-    category: 'Regular',
-    price: 80,
+    stadium: 'Ibn Batouta Stadium',
+    city: 'Tangier',
+    selectedSeats: ['B5', 'B6'],
+    totalPrice: 200,
+    nationality: 'Egyptian',
+    passportType: 'Ordinary Passport',
+    hotelArrivalDate: '2025-01-12',
+    hotelDepartureDate: '2025-01-15',
+    roomPreference: 'Twin',
+    numberOfGuests: '2',
+    departureCity: 'Cairo (CAI)',
+    departureDate: '2025-01-12',
+    returnDate: '2025-01-15',
+    cabinClass: 'Economy',
+    numAdults: '2',
+    numChildren: '0',
+    numInfants: '0',
     status: 'active',
   },
 ];
 
 export default function TicketsScreen() {
+  const router = useRouter();
+
+  const handleTicketPress = (ticket: typeof MY_TICKETS[0]) => {
+    const { id, ...ticketData } = ticket;
+    router.push({
+      pathname: '../tickets/[id]',
+      params: {
+        id,
+        ...ticketData,
+        selectedSeats: ticket.selectedSeats.join(','),
+      },
+    });
+  };
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>My Tickets</Text>
       </View>
 
-      {MY_TICKETS.length === 0 ? (
-        <View style={styles.emptyState}>
-          <FontAwesome name="ticket" size={64} color="#ccc" />
-          <Text style={styles.emptyStateText}>No tickets purchased yet</Text>
-          <Link href="/buy" asChild>
-            <TouchableOpacity style={styles.buyButton}>
-              <Text style={styles.buyButtonText}>Buy Tickets</Text>
-            </TouchableOpacity>
-          </Link>
-        </View>
-      ) : (
-        <View style={styles.ticketsContainer}>
-          {MY_TICKETS.map((ticket) => (
-            <TouchableOpacity
-              key={ticket.id}
-              style={styles.ticketCard}
-              onPress={() => {}}
-            >
-              <View style={styles.ticketHeader}>
-                <Text style={styles.matchTitle}>{ticket.match}</Text>
-                <View style={[
-                  styles.statusBadge,
-                  { backgroundColor: ticket.status === 'active' ? '#4CAF50' : '#FF6B6B' }
-                ]}>
-                  <Text style={styles.statusText}>
-                    {ticket.status.charAt(0).toUpperCase() + ticket.status.slice(1)}
-                  </Text>
+      <View style={styles.content}>
+        {MY_TICKETS.length === 0 ? (
+          <View style={styles.emptyState}>
+            <FontAwesome name="ticket" size={64} color="#ccc" />
+            <Text style={styles.emptyStateText}>No tickets purchased yet</Text>
+            <Link href="/purchase" asChild>
+              <TouchableOpacity style={styles.buyButton}>
+                <Text style={styles.buyButtonText}>Buy Tickets</Text>
+              </TouchableOpacity>
+            </Link>
+          </View>
+        ) : (
+          <View style={styles.ticketsContainer}>
+            {MY_TICKETS.map((ticket) => (
+              <TouchableOpacity
+                key={ticket.id}
+                style={styles.ticketCard}
+                onPress={() => handleTicketPress(ticket)}
+              >
+                <View style={styles.ticketHeader}>
+                  <Text style={styles.matchTitle}>{ticket.team1} vs {ticket.team2}</Text>
+                  <View style={[
+                    styles.statusBadge,
+                    { backgroundColor: ticket.status === 'active' ? '#4CAF50' : '#FF6B6B' }
+                  ]}>
+                    <Text style={styles.statusText}>
+                      {ticket.status.charAt(0).toUpperCase() + ticket.status.slice(1)}
+                    </Text>
+                  </View>
                 </View>
-              </View>
 
-              <View style={styles.ticketDetails}>
-                <View style={styles.detailRow}>
-                  <FontAwesome name="calendar" size={16} color="#666" />
-                  <Text style={styles.detailText}>
-                    {new Date(ticket.date).toLocaleDateString()} {ticket.time}
-                  </Text>
+                <View style={styles.ticketInfo}>
+                  <View style={styles.infoRow}>
+                    <FontAwesome name="calendar" size={16} color="#666" />
+                    <Text style={styles.infoText}>
+                      {new Date(ticket.date).toLocaleDateString()} at {ticket.time}
+                    </Text>
+                  </View>
+                  <View style={styles.infoRow}>
+                    <FontAwesome name="map-marker" size={16} color="#666" />
+                    <Text style={styles.infoText}>
+                      {ticket.stadium}, {ticket.city}
+                    </Text>
+                  </View>
+                  <View style={styles.infoRow}>
+                    <FontAwesome name="ticket" size={16} color="#666" />
+                    <Text style={styles.infoText}>
+                      Seats: {ticket.selectedSeats.join(', ')}
+                    </Text>
+                  </View>
                 </View>
-                <View style={styles.detailRow}>
-                  <FontAwesome name="map-marker" size={16} color="#666" />
-                  <Text style={styles.detailText}>{ticket.stadium}</Text>
-                </View>
-                <View style={styles.detailRow}>
-                  <FontAwesome name="car" size={16} color="#666" />
-                  <Text style={styles.detailText}>Seats: {ticket.seats.join(', ')}</Text>
-                </View>
-              </View>
 
-              <View style={styles.ticketFooter}>
-                <View style={styles.categoryContainer}>
-                  <Text style={styles.categoryText}>{ticket.category}</Text>
+                <View style={styles.ticketFooter}>
+                  <Text style={styles.priceText}>${ticket.totalPrice}</Text>
+                  <Text style={styles.viewDetailsText}>View Details</Text>
                 </View>
-                <Text style={styles.priceText}>${ticket.price}</Text>
-              </View>
-            </TouchableOpacity>
-          ))}
-        </View>
-      )}
+              </TouchableOpacity>
+            ))}
+          </View>
+        )}
+      </View>
     </ScrollView>
   );
 }
@@ -109,7 +157,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
   },
   header: {
-    backgroundColor: '#FF6B6B',
+    backgroundColor: '#008C45',
     padding: 20,
     alignItems: 'center',
   },
@@ -118,8 +166,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#fff',
   },
+  content: {
+    padding: 20,
+  },
   emptyState: {
-    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     padding: 40,
@@ -131,10 +181,10 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   buyButton: {
-    backgroundColor: '#FF6B6B',
+    backgroundColor: '#008C45',
     paddingHorizontal: 30,
     paddingVertical: 15,
-    borderRadius: 25,
+    borderRadius: 8,
   },
   buyButtonText: {
     color: '#fff',
@@ -142,13 +192,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   ticketsContainer: {
-    padding: 20,
+    gap: 20,
   },
   ticketCard: {
     backgroundColor: '#fff',
-    borderRadius: 15,
+    borderRadius: 12,
     padding: 20,
-    marginBottom: 20,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -168,51 +217,47 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: '#333',
+    flex: 1,
   },
   statusBadge: {
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 15,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
   },
   statusText: {
     color: '#fff',
     fontSize: 12,
-    fontWeight: 'bold',
+    fontWeight: '600',
   },
-  ticketDetails: {
-    marginBottom: 15,
+  ticketInfo: {
+    gap: 10,
   },
-  detailRow: {
+  infoRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10,
+    gap: 10,
   },
-  detailText: {
-    marginLeft: 10,
+  infoText: {
+    fontSize: 14,
     color: '#666',
   },
   ticketFooter: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginTop: 15,
+    paddingTop: 15,
     borderTopWidth: 1,
     borderTopColor: '#eee',
-    paddingTop: 15,
-  },
-  categoryContainer: {
-    backgroundColor: '#f0f0f0',
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 15,
-  },
-  categoryText: {
-    color: '#666',
-    fontSize: 12,
-    fontWeight: 'bold',
   },
   priceText: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
-    color: '#FF6B6B',
+    color: '#008C45',
+  },
+  viewDetailsText: {
+    fontSize: 14,
+    color: '#008C45',
+    fontWeight: '600',
   },
 }); 
