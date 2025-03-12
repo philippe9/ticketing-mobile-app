@@ -179,7 +179,7 @@ export default function BuyScreen() {
         {STADIUM_SECTIONS.map(section => (
           <View key={section.id} style={styles.legendItem}>
             <View style={[styles.legendColor, { backgroundColor: section.color }]} />
-            <Text style={styles.legendText}>{section.name} - ${section.price}</Text>
+            <Text style={styles.legendText}>{section.name} - {section.price.toLocaleString()} FCFA</Text>
           </View>
         ))}
       </View>
@@ -279,7 +279,7 @@ export default function BuyScreen() {
           </Text>
           <View style={styles.totalContainer}>
             <Text style={styles.totalLabel}>Total:</Text>
-            <Text style={styles.totalAmount}>${calculateTotal()}</Text>
+            <Text style={styles.totalAmount}>{calculateTotal()} FCFA</Text>
           </View>
         </View>
 

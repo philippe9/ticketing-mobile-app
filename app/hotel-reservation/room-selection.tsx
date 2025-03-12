@@ -88,7 +88,9 @@ export default function RoomSelectionScreen() {
         <View style={styles.roomInfo}>
           <View style={styles.roomHeader}>
             <Text style={styles.roomType}>{room.name}</Text>
-            <Text style={styles.price}>${room.price} / night</Text>
+          </View>
+          <View style={styles.roomHeader}>
+            <Text style={styles.price}>{room.price.toLocaleString()} FCFA / night</Text>
           </View>
 
           <View style={styles.roomDetails}>

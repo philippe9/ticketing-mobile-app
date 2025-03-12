@@ -60,11 +60,10 @@ export default function HotelRegistrationScreen() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to book room');
+        const data = await response.json();
+        console.log(data);
+        throw new Error(data.message);
       }
-
-      const data = await response.json();
-      
       Alert.alert(
         'Success',
         'Hotel reservation completed successfully!',
@@ -76,6 +75,7 @@ export default function HotelRegistrationScreen() {
         ]
       );
     } catch (error) {
+      console.log(error);
       Alert.alert(
         'Error',
         error instanceof Error ? error.message : 'Failed to complete reservation'

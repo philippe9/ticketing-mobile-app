@@ -139,7 +139,7 @@ export default function TicketsScreen() {
                 </View>
 
                 <View style={styles.ticketFooter}>
-                  <Text style={styles.priceText}>${ticket.totalPrice}</Text>
+                  <Text style={styles.priceText}>{ticket.totalPrice.toLocaleString()} FCFA</Text>
                   <Text style={styles.viewDetailsText}>View Details</Text>
                 </View>
               </TouchableOpacity>

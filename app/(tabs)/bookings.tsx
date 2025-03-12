@@ -79,7 +79,7 @@ export default function BookingsScreen() {
         </View>
         <View style={styles.detailRow}>
           <FontAwesome name="bed" size={14} color="#666" style={styles.icon} />
-          <Text style={styles.detailText}>{booking.Room.type} - ${booking.Room.price}/night</Text>
+          <Text style={styles.detailText}>{booking.Room.type} - {booking.Room.price.toLocaleString()} FCFA/night</Text>
         </View>
         <View style={styles.detailRow}>
           <FontAwesome name="calendar" size={14} color="#666" style={styles.icon} />
