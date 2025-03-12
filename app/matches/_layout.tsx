@@ -16,14 +16,21 @@ export default function MatchesLayout() {
       <Stack.Screen
         name="index"
         options={{
-          title: 'Select Match',
+          title: 'Matches',
           headerShown: false,
         }}
       />
       <Stack.Screen
         name="buy"
         options={{
-          title: 'Select Seats',
+          title: 'Buy Tickets',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="payment"
+        options={{
+          title: 'Payment',
           headerShown: false,
         }}
       />

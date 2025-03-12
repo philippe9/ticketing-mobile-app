@@ -6,7 +6,7 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#008C45',  // Moroccan flag green
+        tabBarActiveTintColor: '#660101',  // Deep red theme color
         tabBarInactiveTintColor: '#666',
         tabBarStyle: {
           backgroundColor: '#fff',
@@ -45,6 +45,15 @@ export default function TabLayout() {
           title: 'Buy Tickets',
           tabBarIcon: ({ color, size }) => (
             <FontAwesome name="shopping-cart" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="bookings"
+        options={{
+          title: 'Bookings',
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesome name="bed" size={size} color={color} />
           ),
         }}
       />

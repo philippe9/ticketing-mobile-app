@@ -1,0 +1,46 @@
+{
+  "success": true,
+  "count": 1,
+  "data": [
+    {
+      "id": 1,
+      "roomId": 1,
+      "numeroTicket": 100001,
+      "email": "arawo.service@gmail.com",
+      "name": "Jesuklo Ella REICHTH LAETITIA TOGBE",
+      "status": "En attente",
+      "createdAt": "2025-03-11T07:15:38.540Z",
+      "updatedAt": "2025-03-11T07:15:38.540Z",
+      "Room": {
+        "id": 1,
+        "hotelId": 2,
+        "name": "Appartement Hay Riad",
+        "type": "Double",
+        "price": 300,
+        "availability": true,
+        "description": "Appartement de 108 m² comprenant une chambre, une cuisine entièrement équipée, une salle de bains, un balcon, une piscine privée, une connexion Wi-Fi gratuite, un lave-linge et une télévision à écran plat.",
+        "caracteristiques": [
+          "WiFi",
+          "Climatisation",
+          "Petit-déjeuner",
+          "Vue sur mer"
+        ],
+        "capacity": 3,
+        "mainImage": "1741647211956-q7k2ro3ww.PNG",
+        "images": [
+          "1741647213684-kapcrap5p.PNG",
+          "1741647215805-uql501pjk.PNG",
+          "1741647217871-m5snfijoi.PNG",
+          "1741647219877-tz8ueuydf.PNG",
+          "1741647221765-bpslj9c6q.PNG"
+        ],
+        "policies": " Les modalités de paiement et de prépaiement dépendent du type de réservation.\r\n",
+        "arrivalTime": "15h:00",
+        "departureTime": "00h:00",
+        "cancellationPolicy": "Les conditions d'annulation et de prépaiement varient en fonction du type d'hébergement et des dates de réservation. Il est recommandé de vérifier ces conditions lors de la réservation.",
+        "createdAt": "2025-03-10T22:53:43.166Z",
+        "updatedAt": "2025-03-10T22:53:43.166Z"
+      }
+    }
+  ]
+}

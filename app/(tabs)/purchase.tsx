@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -6,79 +6,137 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
+  ActivityIndicator,
 } from 'react-native';
-import { Link } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
 
-const MATCHES = [
-  {
-    id: '1',
-    team1: 'Morocco',
-    team2: 'Ghana',
-    date: '2025-01-12',
-    time: '20:00',
-    stadium: 'Mohammed V Stadium',
-    city: 'Casablanca',
-    group: 'Group A',
-    availableSeats: 245,
-  },
-  {
-    id: '2',
-    team1: 'Egypt',
-    team2: 'Nigeria',
-    date: '2025-01-13',
-    time: '17:00',
-    stadium: 'Ibn Batouta Stadium',
-    city: 'Tangier',
-    group: 'Group B',
-    availableSeats: 178,
-  },
-  {
-    id: '3',
-    team1: 'Senegal',
-    team2: 'Algeria',
-    date: '2025-01-14',
-    time: '20:00',
-    stadium: 'Moulay Abdellah Stadium',
-    city: 'Rabat',
-    group: 'Group C',
-    availableSeats: 320,
-  },
-];
+interface Match {
+  id_match: number;
+  nom_match: string;
+  equipeA: {
+    nom_equipe: string;
+    drapeau: string;
+  };
+  equipeB: {
+    nom_equipe: string;
+    drapeau: string;
+  };
+  date_match: string;
+  statut: string;
+  Stade: {
+    nom: string;
+  };
+  Groupe: {
+    nom_groupe: string;
+  };
+}
 
 export default function PurchaseScreen() {
-  return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Available Matches</Text>
-        <Text style={styles.headerSubtitle}>AFCON 2025 - Morocco</Text>
-      </View>
+  const router = useRouter();
+  const [matches, setMatches] = useState<Match[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-      <View style={styles.content}>
-        {MATCHES.map((match) => (
-          <Link 
-            key={match.id} 
-            href={`../purchase/steps/seat-selection?matchId=${match.id}&team1=${match.team1}&team2=${match.team2}&date=${match.date}&time=${match.time}&stadium=${match.stadium}&city=${match.city}`} 
-            asChild
-          >
-            <TouchableOpacity style={styles.matchCard}>
+  useEffect(() => {
+    fetchMatches();
+  }, []);
+
+  const fetchMatches = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch('https://canbilletterie.xoboevents.com/api/matchs/');
+      if (!response.ok) {
+        throw new Error('Failed to fetch matches');
+      }
+      const data = await response.json();
+      setMatches(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleMatchSelect = (match: Match) => {
+    router.push({
+      pathname: '/matches/buy',
+      params: {
+        matchId: match.id_match,
+        team1: match.equipeA.nom_equipe,
+        team2: match.equipeB.nom_equipe,
+        date: match.date_match,
+        status: match.statut,
+        stadium: match.Stade.nom,
+      },
+    });
+  };
+
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#008C45" />
+          <Text style={styles.loadingText}>Loading matches...</Text>
+        </View>
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.container}>
+        <View style={styles.errorContainer}>
+          <FontAwesome name="exclamation-circle" size={50} color="#FF4B4B" />
+          <Text style={styles.errorText}>{error}</Text>
+          <TouchableOpacity style={styles.retryButton} onPress={fetchMatches}>
+            <Text style={styles.retryButtonText}>Retry</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  }
+
+  return (
+    <View style={styles.container}>
+      <ScrollView style={styles.scrollView}>
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>Available Matches</Text>
+          <Text style={styles.headerSubtitle}>AFCON 2025 - Morocco</Text>
+        </View>
+
+        <View style={styles.content}>
+          {matches.map((match) => (
+            <TouchableOpacity 
+              key={match.id_match} 
+              style={styles.matchCard}
+              onPress={() => handleMatchSelect(match)}
+            >
               <View style={styles.matchHeader}>
-                <Text style={styles.groupText}>{match.group}</Text>
-                <View style={styles.seatsContainer}>
-                  <FontAwesome name="ticket" size={14} color="#008C45" />
-                  <Text style={styles.seatsText}>{match.availableSeats} seats left</Text>
+                <Text style={styles.groupText}>{match.Groupe.nom_groupe}</Text>
+                <View style={styles.statusContainer}>
+                  <FontAwesome name="circle" size={12} color={match.statut === 'À venir' ? '#660101' : '#666'} />
+                  <Text style={styles.statusText}>{match.statut}</Text>
                 </View>
               </View>
 
               <View style={styles.teamsContainer}>
                 <View style={styles.team}>
-                  <Text style={styles.teamName}>{match.team1}</Text>
+                  <Image 
+                    source={{ uri: `https://canbilletterie.xoboevents.com${match.equipeA.drapeau}` }}
+                    style={styles.teamFlag}
+                  />
+                  <Text style={styles.teamName}>{match.equipeA.nom_equipe}</Text>
                 </View>
                 <View style={styles.vsContainer}>
                   <Text style={styles.vsText}>VS</Text>
                 </View>
                 <View style={styles.team}>
-                  <Text style={styles.teamName}>{match.team2}</Text>
+                  <Image 
+                    source={{ uri: `https://canbilletterie.xoboevents.com${match.equipeB.drapeau}` }}
+                    style={styles.teamFlag}
+                  />
+                  <Text style={styles.teamName}>{match.equipeB.nom_equipe}</Text>
                 </View>
               </View>
 
@@ -86,26 +144,26 @@ export default function PurchaseScreen() {
                 <View style={styles.dateTimeContainer}>
                   <FontAwesome name="calendar" size={14} color="#666" style={styles.icon} />
                   <Text style={styles.dateTimeText}>
-                    {new Date(match.date).toLocaleDateString()} {match.time}
+                    {new Date(match.date_match).toLocaleDateString()}
                   </Text>
                 </View>
                 <View style={styles.locationContainer}>
                   <FontAwesome name="map-marker" size={14} color="#666" style={styles.icon} />
                   <Text style={styles.locationText}>
-                    {match.stadium}, {match.city}
+                    {match.Stade.nom}
                   </Text>
                 </View>
               </View>
 
               <View style={styles.buyContainer}>
                 <Text style={styles.buyText}>Select Seats</Text>
-                <FontAwesome name="chevron-right" size={14} color="#008C45" />
+                <FontAwesome name="chevron-right" size={14} color="#660101" />
               </View>
             </TouchableOpacity>
-          </Link>
-        ))}
-      </View>
-    </ScrollView>
+          ))}
+        </View>
+      </ScrollView>
+    </View>
   );
 }
 
@@ -114,8 +172,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f5f5f5',
   },
+  scrollView: {
+    flex: 1,
+  },
   header: {
-    backgroundColor: '#008C45',
+    backgroundColor: '#660101',
     padding: 20,
     alignItems: 'center',
   },
@@ -156,15 +217,15 @@ const styles = StyleSheet.create({
   groupText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#008C45',
+    color: '#660101',
   },
-  seatsContainer: {
+  statusContainer: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-  seatsText: {
+  statusText: {
     marginLeft: 5,
-    color: '#008C45',
+    color: '#666',
     fontSize: 14,
   },
   teamsContainer: {
@@ -225,8 +286,48 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
   buyText: {
-    color: '#008C45',
+    color: '#660101',
     fontWeight: '600',
     fontSize: 16,
+  },
+  teamFlag: {
+    width: 40,
+    height: 40,
+    marginBottom: 8,
+    borderRadius: 20,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: '#666',
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  errorText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+  },
+  retryButton: {
+    marginTop: 20,
+    backgroundColor: '#660101',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 8,
+  },
+  retryButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 }); 

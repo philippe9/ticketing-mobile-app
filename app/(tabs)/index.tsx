@@ -47,13 +47,37 @@ export default function HomeScreen() {
 
       <View style={styles.content}>
       <React.Fragment>
-        <Link href="../purchase" asChild>
+        <Link href="../matches" asChild>
           <TouchableOpacity style={styles.card}>
             <FontAwesome name="ticket" size={24} color="#008C45" />
             <View style={styles.cardContent}>
               <Text style={styles.cardTitle}>Buy Match Tickets</Text>
               <Text style={styles.cardDescription}>
                 Select your matches and book your complete experience
+              </Text>
+            </View>
+            <FontAwesome name="chevron-right" size={20} color="#666" />
+          </TouchableOpacity>
+        </Link>
+        <Link href="../hotel-reservation" asChild>
+          <TouchableOpacity style={styles.card}>
+            <FontAwesome name="hotel" size={24} color="#61affe" />
+            <View style={styles.cardContent}>
+              <Text style={styles.cardTitle}>Hotel Reservation</Text>
+              <Text style={styles.cardDescription}>
+                Book your hotel for the tournament
+              </Text>
+            </View>
+            <FontAwesome name="chevron-right" size={20} color="#666" />
+          </TouchableOpacity>
+        </Link>
+        <Link href="../e-visa" asChild>
+          <TouchableOpacity style={styles.card}>
+            <FontAwesome name="passport" size={24} color="#660101" />
+            <View style={styles.cardContent}>
+              <Text style={styles.cardTitle}>E-Visa Application</Text>
+              <Text style={styles.cardDescription}>
+                Apply for your E-Visa for the tournament
               </Text>
             </View>
             <FontAwesome name="chevron-right" size={20} color="#666" />
