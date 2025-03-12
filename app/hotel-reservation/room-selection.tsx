@@ -82,7 +82,7 @@ export default function RoomSelectionScreen() {
         onPress={() => setSelectedRoom(room.id)}
       >
         <Image 
-          source={{ uri: `https://reservapihotel.xoboevents.com/uploads/${room.mainImage}` }} 
+          source={{ uri: `https://reservapihotel.xoboevents.com/uploadsrooms/${room.mainImage}` }} 
           style={styles.roomImage} 
         />
         <View style={styles.roomInfo}>
